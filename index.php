@@ -1,5 +1,20 @@
 <?php
-include 'database.php';
+session_start();
+
+$servername = "localhost";
+$username = "cssf998811";
+$password = "cssf118899";
+$dbname = "dindin";
+
+try {
+
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
+
+    // set the PDO error mode to exception
+    $conn -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $stmt = $conn->prepare("SELECT * FROM `user_data`");
+    $stmt->execute();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,46 +45,22 @@ include 'database.php';
 					<div class="col-sm-6">
 						<a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons"></i> <span>Add New User</span></a>
 						<a href="JavaScript:void(0);" class="btn btn-danger" id="delete_multiple"><i class="material-icons"></i> <span>Delete</span></a>						
-						<!-- <button type="button" class="btn btn-success btn-sm" id="register">註冊</button> -->
-						<button type="button" class="btn btn-success btn-sm" id="login">登入</button>
 					</div>
                 </div>
             </div>
 
-			<!-- 註冊會員 -->
-			<!-- <form id="register_form" name="form1" method="post">
-				<div class="form-group">
-					<label for="account">Account:</label>
-					<input type="text" class="form-control" id="account" placeholder="Account" name="account">
-				</div>
-				<div class="form-group">
-					<label for="password">Password:</label>
-					<input type="password" class="form-control" id="password" placeholder="Password" name="password">
-				</div>
-				<div class="form-group">
-					<label for="phone">Phone:</label>
-					<input type="text" class="form-control" id="phone" placeholder="Phone" name="phone">
-				</div>
-				<div class="form-group">
-					<label for="email">Email:</label>
-					<input type="email" class="form-control" id="email" placeholder="Email" name="email">
-				</div>
-				<input type="button" name="save" class="btn btn-primary" value="Register" id="butsave">
-			</form> -->
-
-			<!-- 登入會員 -->
-			<form id="login_form" name="form1" method="post" style="display:none;">
-				
-				<div class="form-group">
-					<label for="account">Account:</label>
-					<input type="text" class="form-control" id="account_log" placeholder="Account" name="account">
-				</div>
-				<div class="form-group">
-					<label for="password">Password:</label>
-					<input type="password" class="form-control" id="password_log" placeholder="Password" name="password">
-				</div>
-				<input type="button" name="save" class="btn btn-primary" value="Login" id="butlogin">
-			</form>
+			<?php
+			if (isset($_SESSION["username"]) && $_SESSION["username"]!="") {
+				$ulogin = TRUE;
+			  } else { $ulogin = FALSE; }
+		
+			  echo "共有".$stmt->rowCount()."筆資料 - ";
+			  if ($ulogin) {
+				echo $_SESSION["username"]." <a href='#' id='logout'>登出</a>";
+			  } else {
+				echo "<a href='#myModal' class='trigger-btn' data-toggle='modal'>登入</a>";
+			  }
+			?>
 
             <table class="table table-striped table-hover">
                 <thead>
@@ -86,15 +77,20 @@ include 'database.php';
 						<th>PASSWORD</th>
                         <th>PHONE</th>
 						<th>EMAIL</th>
-                        <th>ACTION</th>
+						<?php
+						if ($ulogin) {
+							echo "<th>ACTION</th>";
+						}
+						?>
+                        
                     </tr>
                 </thead>
 				<tbody>
 				
 				<?php
-				$result = mysqli_query($conn,"SELECT * FROM user_data");
-					$i=1;
-					while($row = mysqli_fetch_array($result)) {
+				$i=0;
+				while ($row = $stmt->fetch(PDO::FETCH_ASSOC) )  {
+				  $i++;
 				?>
 				<tr id="<?php echo $row["id"]; ?>">
 					<td>
@@ -126,7 +122,6 @@ include 'database.php';
                     </td>
 				</tr>
 				<?php
-				$i++;
 				}
 				?>
 				</tbody>
@@ -134,6 +129,42 @@ include 'database.php';
 			
         </div>
     </div>
+
+	<!-- Modal HTML -->
+<div id="myModal" class="modal fade" role="dialog" aria-hidden="true" data-backdrop="static">
+	<div class="modal-dialog modal-login">
+		<div class="modal-content">
+			<div class="modal-header">				
+				<h4 class="modal-title">Member Login</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			</div>
+			<div class="modal-body">
+				<form action="" method="post">
+					<div class="form-group">
+						<i class="fa fa-user"></i>
+						<input type="text" class="form-control" placeholder="Username" required="required" id="username">
+					</div>
+					<div class="form-group">
+						<i class="fa fa-lock"></i>
+						<input type="password" class="form-control" placeholder="Password" required="required" id="userpass">
+					</div>
+					<div class="form-group">
+						<button class="btn btn-primary btn-block btn-lg" id="login_button">登入系統</button>
+					</div>
+				</form>				
+				
+			</div>
+			<div class="modal-footer">
+				<a href="#">Forgot Password?</a>
+			</div>
+		</div>
+	</div>
+</div>  
+<?php
+} catch(PDOException $e) {
+	echo "無法連線 Connection failed: " . $e->getMessage();
+}
+?>
 
 	<!-- 新增頁面 Add Modal HTML -->
 	<div id="addEmployeeModal" class="modal fade">
@@ -245,86 +276,53 @@ include 'database.php';
 
 
 </body>
-
 <script>
-$(document).ready(function() {
-	$('#login').on('click', function() {
-		$("#login_form").show();
-		$("#register_form").hide();
-	});
-	$('#register').on('click', function() {
-		$("#register_form").show();
-		$("#login_form").hide();
-	});
-	$('#butsave').on('click', function() {
-		$("#butsave").attr("disabled", "disabled");
-		var account = $('#account').val();
-		var password = $('#password').val();
-		var phone = $('#phone').val();
-		var email = $('#email').val();
-		if(account!="" && password!="" && phone!="" && email!="" ){
-			$.ajax({
-				url: "check.php",
-				type: "POST",
-				data: {
-					type: 1,
-					account: account,
-					password: password,				
-					phone: phone,
-					email: email
-				},
-				cache: false,
-				success: function(dataResult){
-					var dataResult = JSON.parse(dataResult);
-					if(dataResult.statusCode==200){
-						$("#butsave").removeAttr("disabled");
-						$('#register_form').find('input:text').val('');
-						$("#success").show();
-						$('#success').html('Registration successful !'); 						
-					}
-					else if(dataResult.statusCode==201){
-						$("#error").show();
-						$('#error').html('account already exists !');
-					}
-					
-				}
-			});
-		}
-		else{
-			alert('Please fill all the field !');
-		}
-	});
-	$('#butlogin').on('click', function() {
-		var account = $('#account_log').val();
-		var password = $('#password_log').val();
-		if(account!="" && password!="" ){
-			$.ajax({
-				url: "check.php",
-				type: "POST",
-				data: {
-					type:2,
-					account: account,
-					password: password						
-				},
-				cache: false,
-				success: function(dataResult){
-					var dataResult = JSON.parse(dataResult);
-					if(dataResult.statusCode==200){
-						// location.href = "welcome.php";
-					}
-					else if(dataResult.statusCode==201){
-						$("#error").show();
-						$('#error').html('Invalid account or Password !');
-					}
-					
-				}
-			});
-		}
-		else{
-			alert('Please fill all the field !');
-		}
-	});
-});
+    $(document).ready( function () {
+
+        $('#login_button').click(function(){  
+           var username = $('#username').val();
+           var userpass = $('#userpass').val();
+
+           if(username != '' && userpass != ''){  
+                $.ajax({  
+                     url:"action.php",
+
+                     method:"POST",
+
+                     data: {"action":"login", "username":username, "userpass":userpass},
+
+                     success:function(data){  
+                          if(data == 'Yes'){  
+                               alert("成功登入系統...");
+                               // $('#myModal').hide();
+                               location.reload();
+                          }  
+                          else{ 
+                               alert("帳密找不到...");
+                          } 
+                     },
+                     error:function(data){
+                       alter('無法登入');
+                     }
+            	});  
+           }else{  
+                alert("兩個欄位都要填寫!");
+           }  
+      });
+
+  $('#logout').click(function(){  
+       var action = "logout";
+       $.ajax({
+            url:"action.php",  
+            method:"POST",  
+            data:{"action":action},
+            success:function()
+            {  
+                 location.reload();  
+            }  
+       });  
+  });  
+  });
 </script>
 
 </html>    
