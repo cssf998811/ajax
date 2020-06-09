@@ -43,22 +43,27 @@ try {
 						<h2>Manage <b>Users</b></h2>
 					</div>
 					<div class="col-sm-6">
-						<a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons"></i> <span>Add New User</span></a>
-						<a href="JavaScript:void(0);" class="btn btn-danger" id="delete_multiple"><i class="material-icons"></i> <span>Delete</span></a>						
+					<?php
+					if (isset($_SESSION["username"]) && $_SESSION["username"]!="") {
+						$ulogin = TRUE;
+					} else { $ulogin = FALSE; }
+
+					if ($ulogin) {
+						echo "<a href='#addEmployeeModal' class='btn btn-success' data-toggle='modal'><i class='material-icons'></i> <span>Add New User</span></a>";
+						echo "<a href='JavaScript:void(0);' class='btn btn-danger' id='delete_multiple'><i class='material-icons'></i> <span>Delete</span></a>";
+					}
+					?>						
 					</div>
                 </div>
             </div>
 
 			<?php
-			if (isset($_SESSION["username"]) && $_SESSION["username"]!="") {
-				$ulogin = TRUE;
-			  } else { $ulogin = FALSE; }
-		
 			  echo "共有".$stmt->rowCount()."筆資料 - ";
 			  if ($ulogin) {
 				echo $_SESSION["username"]." <a href='#' id='logout'>登出</a>";
 			  } else {
 				echo "<a href='#myModal' class='trigger-btn' data-toggle='modal'>登入</a>";
+				echo "<span style='margin-left:70%;'>您尚未登入，請登入後再進行操作!</span>";
 			  }
 			?>
 
@@ -106,24 +111,30 @@ try {
 					<td><?php echo $row["phone"]; ?></td>
 					<td><?php echo $row["email"]; ?></td>
 
-					<td>
-						<a href="#editEmployeeModal" class="edit" data-toggle="modal">
-							<i class="material-icons update" data-toggle="tooltip" 
-							data-id="<?php echo $row["id"]; ?>"
-							data-name="<?php echo $row["name"]; ?>"
-							data-account="<?php echo $row["account"]; ?>"
-							data-password="<?php echo $row["password"]; ?>"
-							data-phone="<?php echo $row["phone"]; ?>"
-							data-email="<?php echo $row["email"]; ?>"
-							title="Edit"></i>
-						</a>
-						<a href="#deleteEmployeeModal" class="delete" data-id="<?php echo $row["id"]; ?>" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" 
-						 title="Delete"></i></a>
-                    </td>
+					<?php
+					if ($ulogin) {
+						echo "<td>";
+							echo "<a href='#editEmployeeModal' class='edit' data-toggle='modal'>";
+							echo "<i class='material-icons update' data-toggle='tooltip'";
+							echo "data-id='" . $row["id"] . "'";
+							echo "data-name='" . $row["name"] . "'";
+							echo "data-account" . $row["account"] . "'";
+							echo "data-password" . $row["password"] . "'";
+							echo "data-phone" . $row["phone"] . "'";
+							echo "data-email" . $row["email"] . "'";
+							echo "title='Edit'></i>";
+							echo "</a>";
+							echo "<a href='#deleteEmployeeModal' class='delete' data-id='" . $row["id"] . "' data-toggle='modal'><i class='material-icons' data-toggle='tooltip' title='Delete'></i></a>";
+						echo "</td>";
+					}
+					?>						
+                    
 				</tr>
+
 				<?php
 				}
 				?>
+				
 				</tbody>
 			</table>
 			
