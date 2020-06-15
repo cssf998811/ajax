@@ -10,15 +10,16 @@ if(count($_POST)>0){
 		$password=$_POST['password'];
 		$phone=$_POST['phone'];
 		$email=$_POST['email'];
+
 		$sql = "INSERT INTO `user_data`( `name`, `account`, `password`,`phone`, `email`) 
 		VALUES ('$name', '$account', '$password', '$phone', '$email')";
-		if (mysqli_query($conn, $sql)) {
+		$stmt = $conn->prepare($sql);
+		if ($stmt->execute()) {
 			echo json_encode(array("statusCode"=>200));
 		} 
 		else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
-		mysqli_close($conn);
 	}
 }
 
@@ -31,14 +32,15 @@ if(count($_POST)>0){
 		$password=$_POST['password'];
 		$phone=$_POST['phone'];
 		$email=$_POST['email'];
+
 		$sql = "UPDATE `user_data` SET `name`='$name', `account`='$account', `password`='$password', `phone`='$phone', `email`='$email' WHERE id=$id";
-		if (mysqli_query($conn, $sql)) {
+		$stmt = $conn->prepare($sql);
+		if ($stmt->execute()) {
 			echo json_encode(array("statusCode"=>200));
 		} 
 		else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
-		mysqli_close($conn);
 	}
 }
 
@@ -46,28 +48,29 @@ if(count($_POST)>0){
 if(count($_POST)>0){
 	if($_POST['type']==3){
 		$id=$_POST['id'];
+
 		$sql = "DELETE FROM `user_data` WHERE id = $id ";
-		if (mysqli_query($conn, $sql)) {
+		$stmt = $conn->prepare($sql);
+		if ($stmt->execute()) {
 			echo $id;
 		} 
 		else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
-		mysqli_close($conn);
 	}
 }
 if(count($_POST)>0){
 	if($_POST['type']==4){
 		$id=$_POST['id'];
+		
 		$sql = "DELETE FROM user_data WHERE id in ($id)";
-		if (mysqli_query($conn, $sql)) {
+		$stmt = $conn->prepare($sql);
+		if ($stmt->execute()) {
 			echo $id;
 		} 
 		else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
-		mysqli_close($conn);
 	}
 }
-
 ?>

@@ -122,3 +122,19 @@ $(document).ready(function() {
         }
     });
 });
+// show
+$(document).on('click', '.show', function(e) {
+    var id = $(this).attr("data-id");
+    var name = $(this).attr("data-name");
+    var account = $(this).attr("data-account");
+    var password = $(this).attr("data-password");
+    var phone = $(this).attr("data-phone");
+    var email = $(this).attr("data-email");
+
+    $('#id_s').val(id);
+    $('#name_s').val(name);
+    $('#account_s').val(account);
+    $('#password_s').val(password);
+    $('#phone_s').val(phone);
+    $('#email_s').val(email);
+});

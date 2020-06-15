@@ -105,23 +105,52 @@ try {
 						</span>
 					</td>
 					<td><?php echo $i; ?></td>
-					<td><?php echo $row["name"]; ?></td>
+					<td>
+						<?php
+						// show
+							// echo "<a href='#showEmployeeModal' class='edit show' data-toggle='modal'>";
+							// echo "<i class='material-icons' data-toggle='tooltip'";
+							// echo "data-id='" . $row["id"] . "'";
+							// echo "data-name='" . $row["name"] . "'";
+							// echo "data-account='" . $row["account"] . "'";
+							// echo "data-password='" . $row["password"] . "'";
+							// echo "data-phone='" . $row["phone"] . "'";
+							// echo "data-email='" . $row["email"] . "'";
+							// echo "title=''>assignment_ind</i>";
+							// echo $row["name"] . "</a>";
+
+							echo "<a href='#showEmployeeModal' class='edit' data-toggle='modal'>";
+							echo "<i class='material-icons show' data-toggle='tooltip'";
+							echo "data-id='" . $row["id"] . "'";
+							echo "data-name='" . $row["name"] . "'";
+							echo "data-account='" . $row["account"] . "'";
+							echo "data-password='" . $row["password"] . "'";
+							echo "data-phone='" . $row["phone"] . "'";
+							echo "data-email='" . $row["email"] . "'";
+							echo "title='Edit'>assignment_ind</i>";
+							echo "</a>";
+
+							// echo"<a href='show.php?id='" . $row["id"] . "'>" . $row["name"] . "</a>";
+							echo $row["name"];
+						?>
+					</td>
 					<td><?php echo $row["account"]; ?></td>
 					<td><?php echo $row["password"]; ?></td>
 					<td><?php echo $row["phone"]; ?></td>
 					<td><?php echo $row["email"]; ?></td>
 
 					<?php
+					// edit and delete
 					if ($ulogin) {
 						echo "<td>";
 							echo "<a href='#editEmployeeModal' class='edit' data-toggle='modal'>";
 							echo "<i class='material-icons update' data-toggle='tooltip'";
 							echo "data-id='" . $row["id"] . "'";
 							echo "data-name='" . $row["name"] . "'";
-							echo "data-account" . $row["account"] . "'";
-							echo "data-password" . $row["password"] . "'";
-							echo "data-phone" . $row["phone"] . "'";
-							echo "data-email" . $row["email"] . "'";
+							echo "data-account='" . $row["account"] . "'";
+							echo "data-password='" . $row["password"] . "'";
+							echo "data-phone='" . $row["phone"] . "'";
+							echo "data-email='" . $row["email"] . "'";
 							echo "title='Edit'></i>";
 							echo "</a>";
 							echo "<a href='#deleteEmployeeModal' class='delete' data-id='" . $row["id"] . "' data-toggle='modal'><i class='material-icons' data-toggle='tooltip' title='Delete'></i></a>";
@@ -285,6 +314,87 @@ try {
 		</div>
 	</div>
 
+<!-- 顯示頁面 Show Modal HTML -->
+
+	<div id="showEmployeeModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form id="show_form">
+					<div class="modal-header">						
+						<h4 class="modal-title">User Information</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					</div>
+					<div class="modal-body">
+
+						<!-- <table class="table table-hover">
+							<thead>
+								<tr>
+									<th scope="row"></th>
+									<th scope="row">Detail</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th scope="col">ID</th>
+									<td id="id_u"></td>
+								</tr>
+								<tr>
+									<th scope="col">NAME</th>
+									<td id="name_u"></td>
+								</tr>
+								<tr>
+									<th scope="col">ACCOUNT</th>
+									<td id="account_u"></td>
+								</tr>
+								<tr>
+									<th scope="col">PASSWORD</th>
+									<td id="password_u"></td>
+								</tr>
+								<tr>
+									<th scope="col">PHONE</th>
+									<td id="phone_u"></td>
+								</tr>
+								<tr>
+									<th scope="col">EMAIL</th>
+									<td id="email_u"></td>
+								</tr>
+							</tbody>
+						</table> -->
+
+						<div class="form-group">
+							<label>Id</label>
+							<input type="text" id="id_s" name="id" class="form-control" readonly="value">
+						</div>				
+						<div class="form-group">
+							<label>Name</label>
+							<input type="text" id="name_s" name="name" class="form-control" readonly="value">
+						</div>
+						<div class="form-group">
+							<label>Account</label>
+							<input type="account" id="account_s" name="account" class="form-control" readonly="value">
+						</div>
+						<div class="form-group">
+							<label>Password</label>
+							<input type="password" id="password_s" name="password" class="form-control" readonly="value">
+						</div>				
+						<div class="form-group">
+							<label>PHONE</label>
+							<input type="phone" id="phone_s" name="phone" class="form-control" readonly="value">
+						</div>
+						<div class="form-group">
+							<label>Email</label>
+							<input type="email" id="email_s" name="email" class="form-control" readonly="value">
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<!-- <input type="hidden" value="5" name="type"> -->
+						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
 </body>
 <script>
